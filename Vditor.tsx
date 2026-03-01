@@ -95,7 +95,7 @@ export function Vditor({
   return (
     <div
       ref={containerRef}
-      className={cn("vditor max-h-[80vh]", className)}
+      className={cn("vditor max-h-[60vh] overflow-hidden", className)}
     />
   );
 }
