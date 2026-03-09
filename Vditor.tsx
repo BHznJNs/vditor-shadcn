@@ -1,8 +1,7 @@
-import { useMemoizedFn, useMount, useTheme, useUnmount } from "ahooks";
+import { useMemoizedFn, useMount, useUnmount } from "ahooks";
 import { useEffect, useRef } from "react";
 import VditorType from "vditor";
 import { cn } from "@/lib/utils";
-import { useSettingsStore } from "@/stores/settings-store";
 
 const CUSTOM_VDITOR_TOOLBAR = [
   { name: "headings", tipPosition: "se" },
@@ -27,10 +26,16 @@ const CUSTOM_VDITOR_TOOLBAR = [
   { name: "fullscreen", tipPosition: "sw" },
 ];
 
+/// <reference types="vditor" />
+type SupportedLanguage = keyof II18n;
+type SupportedTheme = "light" | "dark";
+
 export type VditorProps = {
   initialValue?: string;
   className?: string;
   placeholder?: string;
+  theme?: SupportedTheme;
+  lang?: SupportedLanguage;
   disabled?: boolean;
   onChange?: (value: string) => void;
 };
@@ -39,17 +44,17 @@ export function Vditor({
   initialValue,
   className,
   placeholder,
+  theme = "light",
+  lang,
   disabled,
   onChange,
 }: VditorProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const vditorRef = useRef<VditorType | null>(null);
+  const themeRef = useRef<SupportedTheme>(theme);
   const changeHandler = useMemoizedFn((value: string) => onChange?.(value));
 
-  const { current: { theme: themeMode } } = useSettingsStore();
-  const { theme, setThemeMode } = useTheme();
-
-  const setVditorTheme = () => {
+  const setVditorTheme = (theme: SupportedTheme) => {
     const isDark = theme === "dark";
     vditorRef.current?.setTheme(
       isDark ? "dark" : "classic",
@@ -59,19 +64,19 @@ export function Vditor({
   };
 
   useMount(() => {
-    setThemeMode(themeMode);
     const vditor = new VditorType(containerRef.current!, {
       placeholder: placeholder ?? "",
       mode: "ir",
       width: "100%",
       minHeight: 160,
+      lang,
       cache: { enable: false },
       value: initialValue,
       toolbar: CUSTOM_VDITOR_TOOLBAR,
       blur: changeHandler,
       after: () => {
         vditorRef.current = vditor;
-        setVditorTheme();
+        setVditorTheme(themeRef.current);
       },
     });
   });
@@ -89,7 +94,8 @@ export function Vditor({
   }, [disabled]);
 
   useEffect(() => {
-    setVditorTheme();
+    themeRef.current = theme;
+    setVditorTheme(theme);
   }, [theme]);
 
   return (
