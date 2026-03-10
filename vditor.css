@@ -35,10 +35,18 @@
 
 .vditor--fullscreen {
   max-height: unset !important;
+}
 
-  .vditor-toolbar {
-    padding-left: 215px !important;
-  }
+.vditor-sm {
+  --editor-padding: 2.4rem;
+}
+
+.vditor-md {
+  --editor-padding: 5rem;
+}
+
+.vditor-lg {
+  --editor-padding: 12rem;
 }
 
 .resizable-panel-resizing .vditor {
@@ -56,7 +64,7 @@
   --selected-background-color:   color-mix(in oklch, var(--primary) 20%, transparent);
 
   .vditor-reset:focus-within {
-      background-color: color-mix(in oklch, var(--background) 90%, white) !important;
+    background-color: color-mix(in oklch, var(--background) 90%, white) !important;
   }
 }
 
@@ -67,7 +75,7 @@
 .vditor-toolbar {
   display: flex;
   flex-wrap: wrap;
-  padding-left: 2rem !important;
+  padding-left: var(--editor-padding) !important;
   border-bottom-color: var(--border) !important;
   background-color: var(--card) !important;
   border-radius: var(--radius) var(--radius) 0 0;
@@ -124,6 +132,12 @@
   background-color: var(--popover) !important;
   color: var(--popover-foreground) !important;
   border-radius: var(--radius-sm) !important;
+}
+
+/* 内容区域 */
+.vditor-reset {
+  padding-left: var(--editor-padding) !important;
+  padding-right: var(--editor-padding) !important;
 }
 
 /* 行内代码块 */
